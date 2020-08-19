@@ -1,26 +1,23 @@
 package service
 
 import (
-	"github.com/gin-gonic/gin"
 	"math"
 	"middleProject/src/main/base/domain"
 	"middleProject/src/main/comm"
-	"net/http"
 	"strconv"
 )
 
-func DataBaseStatus(c *gin.Context) {
+func DataBaseStatus() *domain.DBInfo {
 	dbInfo := new(domain.DBInfo)
 	dbInfo.DataBaseName = comm.DBDatabase
 	dbInfo.Port = comm.PORT
 
-	res, err := comm.Db.Query(comm.DB_CHECK)
+	_, err := comm.Db.Query(comm.DB_CHECK)
 	if err == nil {
 		dbInfo.Status = "Running"
 	} else {
 		dbInfo.Status = "Stop"
 	}
-	println(res)
 
 	upResults, err := comm.Db.Query(comm.DB_UPTIME)
 	if err == nil {
@@ -50,27 +47,14 @@ func DataBaseStatus(c *gin.Context) {
 		}
 	}
 
-	c.JSON(
-		http.StatusOK,
-		gin.H{
-			"code": http.StatusOK,
-			"data": dbInfo,
-		},
-	)
+	return dbInfo
 }
 
 //查看MySQl连接数
-func Processlist(c *gin.Context) {
+func Processlist() (list []*domain.ProcesslistEntity, err error) {
 	results, err := comm.Db.Query(comm.DB_PROCESS_LIST)
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"code": http.StatusInternalServerError,
-				"data": err,
-			},
-		)
-		return
+		return nil, err
 	}
 	entities := make([]*domain.ProcesslistEntity, len(results))
 	for k, res := range results {
@@ -101,27 +85,15 @@ func Processlist(c *gin.Context) {
 		}
 		entities[k] = d
 	}
-	c.JSON(
-		http.StatusOK,
-		gin.H{
-			"code": http.StatusOK,
-			"data": entities,
-		},
-	)
+
+	return entities, nil
 }
 
 //查询数据库QPS【每秒处理的查询数】
-func QPS(c *gin.Context) {
+func QPS() (list []*domain.QuestionsEntity, err error) {
 	qpsResults, err := comm.Db.Query(comm.DB_QPS_QUESTIONS)
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"code": http.StatusInternalServerError,
-				"data": err,
-			},
-		)
-		return
+		return nil, err
 	}
 	qpsList := make([]*domain.QuestionsEntity, len(qpsResults))
 	for k, res := range qpsResults {
@@ -138,14 +110,7 @@ func QPS(c *gin.Context) {
 
 	upResults, err := comm.Db.Query(comm.DB_UPTIME)
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"code": http.StatusInternalServerError,
-				"data": err,
-			},
-		)
-		return
+		return nil, err
 	}
 	upList := make([]*domain.QuestionsEntity, len(upResults))
 	for k, res := range upResults {
@@ -169,27 +134,14 @@ func QPS(c *gin.Context) {
 		QPSList[k] = d
 	}
 
-	c.JSON(
-		http.StatusOK,
-		gin.H{
-			"code": http.StatusOK,
-			"data": QPSList,
-		},
-	)
+	return QPSList, nil
 }
 
 //查看数据库TPS 【每秒处理的事务数】
-func TPS(c *gin.Context) {
+func TPS() (list []*domain.QuestionsEntity, err error) {
 	commitResults, err := comm.Db.Query(comm.DB_TPS_COM_COMMIT)
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"code": http.StatusInternalServerError,
-				"data": err,
-			},
-		)
-		return
+		return nil, err
 	}
 	commitList := make([]*domain.QuestionsEntity, len(commitResults))
 	for k, res := range commitResults {
@@ -206,14 +158,7 @@ func TPS(c *gin.Context) {
 
 	rollbackResults, err := comm.Db.Query(comm.DB_TPS_COM_ROLLBACK)
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"code": http.StatusInternalServerError,
-				"data": err,
-			},
-		)
-		return
+		return nil, err
 	}
 	rollbackList := make([]*domain.QuestionsEntity, len(rollbackResults))
 	for k, res := range rollbackResults {
@@ -230,14 +175,7 @@ func TPS(c *gin.Context) {
 
 	upResults, err := comm.Db.Query(comm.DB_UPTIME)
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"code": http.StatusInternalServerError,
-				"data": err,
-			},
-		)
-		return
+		return nil, err
 	}
 	upList := make([]*domain.QuestionsEntity, len(upResults))
 	for k, res := range upResults {
@@ -261,31 +199,16 @@ func TPS(c *gin.Context) {
 		d.Value = (commEntity.Value + rollEntity.Value) / res.Value
 		TPSList[k] = d
 	}
-
-	c.JSON(
-		http.StatusOK,
-		gin.H{
-			"code": http.StatusOK,
-			"data": TPSList,
-		},
-	)
-
+	return TPSList, nil
 }
 
 //key_buffer_read_hits = (1-key_reads / key_read_requests) * 100%
 //key_buffer_write_hits = (1-key_writes / key_write_requests) * 100%
 //key Buffer 命中率
-func BufferCache(c *gin.Context) {
+func BufferCache() (list []*domain.KeyBufferEntity, err error) {
 	commitResults, err := comm.Db.Query(comm.DB_KEY_BUFFER)
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"code": http.StatusInternalServerError,
-				"data": err,
-			},
-		)
-		return
+		return nil, err
 	}
 	commitList := make([]*domain.KeyBufferEntity, 2)
 	var keyReads = 0.0
@@ -337,29 +260,16 @@ func BufferCache(c *gin.Context) {
 	commitList[0] = keyReadEntity
 	commitList[1] = keyWriteEntity
 
-	c.JSON(
-		http.StatusOK,
-		gin.H{
-			"code": http.StatusOK,
-			"data": commitList,
-		},
-	)
+	return commitList, nil
 
 }
 
 //InnoDB Buffer命中率
 //innodb_buffer_read_hits = (1 - innodb_buffer_pool_reads / innodb_buffer_pool_read_requests) * 100%
-func InnoDBBufferCache(c *gin.Context) {
+func InnoDBBufferCache() (list *domain.KeyBufferEntity, err error) {
 	commitResults, err := comm.Db.Query(comm.DB_INNODB_BUFFER)
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"code": http.StatusInternalServerError,
-				"data": err,
-			},
-		)
-		return
+		return nil, err
 	}
 	var reads = 0.0
 	var requests = 0.0
@@ -383,30 +293,16 @@ func InnoDBBufferCache(c *gin.Context) {
 		keyReadEntity.Value = (1 - r) * 100
 
 	}
-
-	c.JSON(
-		http.StatusOK,
-		gin.H{
-			"code": http.StatusOK,
-			"data": keyReadEntity,
-		},
-	)
+	return keyReadEntity, nil
 
 }
 
 //Query Cache命中率
 //Query_cache_hits = (Qcahce_hits / (Qcache_hits + Qcache_inserts )) * 100%;
-func QueryCache(c *gin.Context) {
+func QueryCache() (list *domain.KeyBufferEntity, err error) {
 	commitResults, err := comm.Db.Query(comm.DB_QUERY_CACHE)
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"code": http.StatusInternalServerError,
-				"data": err,
-			},
-		)
-		return
+		return nil, err
 	}
 	var qcacheHits = 0.0
 	var QcacheInsert = 0.0
@@ -429,29 +325,16 @@ func QueryCache(c *gin.Context) {
 		keyReadEntity.Value = (1 - r) * 100
 
 	}
-	c.JSON(
-		http.StatusOK,
-		gin.H{
-			"code": http.StatusOK,
-			"data": keyReadEntity,
-		},
-	)
+	return keyReadEntity, nil
 
 }
 
 //Thread Cache 命中率
 //Thread_cache_hits = (1 - Threads_created / connections ) * 100%
-func ThreadCache(c *gin.Context) {
+func ThreadCache() (list *domain.KeyBufferEntity, err error) {
 	commitResults, err := comm.Db.Query(comm.DB_THREAD_CACHE)
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"code": http.StatusInternalServerError,
-				"data": err,
-			},
-		)
-		return
+		return nil, err
 	}
 	var thread = 0.0
 	for _, res := range commitResults {
@@ -464,7 +347,7 @@ func ThreadCache(c *gin.Context) {
 
 	connResults, err := comm.Db.Query(comm.DB_CONNECTIONS)
 	if err != nil {
-		_ = c.Error(err)
+		return nil, err
 	}
 	var conn = 0.0
 	for _, res := range connResults {
@@ -484,28 +367,15 @@ func ThreadCache(c *gin.Context) {
 		keyReadEntity.Value = (1 - r) * 100
 
 	}
+	return keyReadEntity, nil
 
-	c.JSON(
-		http.StatusOK,
-		gin.H{
-			"code": http.StatusOK,
-			"data": keyReadEntity,
-		},
-	)
 }
 
 //锁定状态
-func LockStatus(c *gin.Context) {
+func LockStatus() (list []*domain.KeyBufferEntity, err error) {
 	results, err := comm.Db.Query(comm.DB_LOCK)
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"code": http.StatusInternalServerError,
-				"data": err,
-			},
-		)
-		return
+		return nil, err
 	}
 	entities := make([]*domain.KeyBufferEntity, len(results))
 	for k, res := range results {
@@ -519,35 +389,15 @@ func LockStatus(c *gin.Context) {
 		}
 		entities[k] = d
 	}
-	c.JSON(
-		http.StatusOK,
-		gin.H{
-			"code": http.StatusOK,
-			"data": entities,
-		},
-	)
+	return entities, nil
 
 }
 
-func SlowSQl(c *gin.Context) {
-	sql := c.PostForm("sql")
+func SlowSQl(sql string) (list []map[string]string, err error) {
 	commitResults, err := comm.Db.QueryString(" explain " + sql)
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"code": http.StatusInternalServerError,
-				"data": err,
-			},
-		)
-		return
+		return nil, err
 	}
-	c.JSON(
-		http.StatusOK,
-		gin.H{
-			"code": http.StatusOK,
-			"data": commitResults,
-		},
-	)
+	return commitResults, nil
 
 }

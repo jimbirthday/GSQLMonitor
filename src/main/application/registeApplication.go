@@ -2,7 +2,6 @@ package application
 
 import (
 	"github.com/gin-gonic/gin"
-	"middleProject/src/main/base/service"
 	baseWeb "middleProject/src/main/base/web"
 	"middleProject/src/main/comm"
 	"middleProject/src/main/middleware"
@@ -18,20 +17,20 @@ func Init() {
 func userInit() {
 	baseRouter := comm.Gin.Group("/base")
 	{
-		baseRouter.GET("/processlist", service.Processlist)
-		baseRouter.GET("/qps", service.QPS)
-		baseRouter.GET("/tps", service.TPS)
-		baseRouter.GET("/keyBuffer", service.BufferCache)
-		baseRouter.GET("/innodbBuffer", service.InnoDBBufferCache)
-		baseRouter.GET("/queryCache", service.QueryCache)
-		baseRouter.GET("/threadCache", service.ThreadCache)
-		baseRouter.GET("/lockStatus", service.LockStatus)
-		baseRouter.GET("/dataBaseStatus", service.DataBaseStatus)
+		baseRouter.GET("/processlist", baseWeb.Processlist)
+		baseRouter.GET("/qps", baseWeb.QPS)
+		baseRouter.GET("/tps", baseWeb.TPS)
+		baseRouter.GET("/keyBuffer", baseWeb.BufferCache)
+		baseRouter.GET("/innodbBuffer", baseWeb.InnoDBBufferCache)
+		baseRouter.GET("/queryCache", baseWeb.QueryCache)
+		baseRouter.GET("/threadCache", baseWeb.ThreadCache)
+		baseRouter.GET("/lockStatus", baseWeb.LockStatus)
+		baseRouter.GET("/dataBaseStatus", baseWeb.DataBaseStatus)
 	}
 
 	actionRouter := comm.Gin.Group("/action")
 	{
-		actionRouter.POST("/slowSql", service.SlowSQl)
+		actionRouter.POST("/slowSql", baseWeb.SlowSQl)
 
 	}
 
