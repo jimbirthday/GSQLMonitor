@@ -30,7 +30,8 @@ func userInit() {
 
 	actionRouter := comm.Gin.Group("/action")
 	{
-		actionRouter.POST("/slowSql", baseWeb.SlowSQl)
+		actionRouter.POST("/explainSql", baseWeb.ExplainSql)
+		actionRouter.POST("/slowStatus", baseWeb.SlowStatus)
 
 	}
 

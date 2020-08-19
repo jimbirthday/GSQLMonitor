@@ -23,11 +23,13 @@ var (
 	//锁状态
 	DB_LOCK = " show status like '%lock%';"
 	//慢sql
-	DB_SLOW_SQL = " show variables like 'slow_query%'"
+	DB_SLOW_SQL_INFO = " show variables like 'slow_query%'"
+	DB_SLOW_SQL_TIME = " show variables like '%long_query_time%'"
 	//查看默认引擎
 	DB_ENGINE = "show variables like 'default_storage_engine';"
 
 	DB_DATABASE_SIZE = " select concat(round(sum(DATA_LENGTH/1024/1024),2),'MB') as data from TABLES;"
 
 	DB_CHECK= " select 1=1;"
+
 )

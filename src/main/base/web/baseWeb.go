@@ -200,12 +200,12 @@ func LockStatus(c *gin.Context) {
 
 }
 
-func SlowSQl(c *gin.Context) {
+func ExplainSql(c *gin.Context) {
 	sql := c.PostForm("sql")
-	res, err := service.SlowSQl(sql)
+	res, err := service.ExplainSql(sql)
 	if err != nil {
 		c.JSON(
-			http.StatusInternalServerError,
+			http.StatusOK,
 			gin.H{
 				"code": http.StatusInternalServerError,
 				"data": err,
@@ -221,4 +221,50 @@ func SlowSQl(c *gin.Context) {
 		},
 	)
 
+}
+
+func SlowStatus(c *gin.Context) {
+	res, err := service.SlowStatus()
+	if err != nil {
+		c.JSON(
+			http.StatusOK,
+			gin.H{
+				"code":   http.StatusInternalServerError,
+				"data":   err,
+				"status": res,
+			},
+		)
+		return
+	}
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"code":   http.StatusOK,
+			"data":   res,
+			"status": res,
+		},
+	)
+}
+
+func OpenSlow(c *gin.Context) {
+	res, err := service.OpenSlow()
+	if err != nil {
+		c.JSON(
+			http.StatusOK,
+			gin.H{
+				"code":   http.StatusInternalServerError,
+				"data":   err,
+				"status": res,
+			},
+		)
+		return
+	}
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"code":   http.StatusOK,
+			"data":   res,
+			"status": res,
+		},
+	)
 }

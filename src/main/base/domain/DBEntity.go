@@ -28,4 +28,7 @@ type DBInfo struct {
 	DataSize string
 	Uptime string
 	Status string
+	SlowQueryLog string
+	SlowQueryLogFile string
+	LongQueryTime string
 }

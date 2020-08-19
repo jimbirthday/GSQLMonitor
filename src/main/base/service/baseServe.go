@@ -47,6 +47,31 @@ func DataBaseStatus() *domain.DBInfo {
 		}
 	}
 
+	slowInfoResults, _ := comm.DbInfo.Query(comm.DB_SLOW_SQL_INFO)
+	if err == nil {
+		for _, res := range slowInfoResults {
+			if v, ok := res["Variable_name"]; ok {
+				if string(v) == "slow_query_log" {
+					dbInfo.SlowQueryLog = string(res["Value"])
+				}
+				if string(v) == "slow_query_log_file" {
+					dbInfo.SlowQueryLogFile = string(res["Value"])
+				}
+			}
+		}
+	}
+
+	slowTimeResults, _ := comm.DbInfo.Query(comm.DB_SLOW_SQL_TIME)
+	if err == nil {
+		for _, res := range slowTimeResults {
+			if v, ok := res["Variable_name"]; ok {
+				if string(v) == "long_query_time" {
+					dbInfo.LongQueryTime = string(res["Value"])
+				}
+			}
+		}
+	}
+
 	return dbInfo
 }
 
@@ -393,7 +418,7 @@ func LockStatus() (list []*domain.KeyBufferEntity, err error) {
 
 }
 
-func SlowSQl(sql string) (list []map[string]string, err error) {
+func ExplainSql(sql string) (list []map[string]string, err error) {
 	commitResults, err := comm.Db.QueryString(" explain " + sql)
 	if err != nil {
 		return nil, err
@@ -401,3 +426,40 @@ func SlowSQl(sql string) (list []map[string]string, err error) {
 	return commitResults, nil
 
 }
+
+func SlowStatus() (slowStatus bool, err error) {
+	slowInfoResults, err := comm.DbInfo.Query(comm.DB_SLOW_SQL_INFO)
+	if err == nil {
+		for _, res := range slowInfoResults {
+			if v, ok := res["Variable_name"]; ok {
+				if string(v) == "slow_query_log" {
+					if string(res["Value"]) == "OFF" || string(res["Value"]) == "OFF"{
+						return false,nil
+					}else {
+						return true,nil
+					}
+				}
+			}
+		}
+	}
+	return false, err
+}
+
+func OpenSlow() (slowStatus bool, err error) {
+	slowInfoResults, err := comm.DbInfo.Query(comm.DB_SLOW_SQL_INFO)
+	if err == nil {
+		for _, res := range slowInfoResults {
+			if v, ok := res["Variable_name"]; ok {
+				if string(v) == "slow_query_log" {
+					if string(res["Value"]) == "OFF" || string(res["Value"]) == "OFF"{
+						return false,nil
+					}else {
+						return true,nil
+					}
+				}
+			}
+		}
+	}
+	return false, err
+}
+
