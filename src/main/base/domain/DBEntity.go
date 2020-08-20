@@ -32,3 +32,10 @@ type DBInfo struct {
 	SlowQueryLogFile string
 	LongQueryTime string
 }
+
+type SlowEntity struct {
+	Path string
+	Counts string
+	FileLog string
+
+}

@@ -8,12 +8,12 @@ import (
 
 var (
 	DBUser = "root"
-	DBPwd  = "jimbir8520"
-	DBUrl  = "localhost"
-	//DBPwd      = "Lecent@123"
-	//DBUrl      = "192.168.1.15"
-	//DBDatabase = "lecent_park_admin"
-	DBDatabase = "prison_public"
+	//DBPwd  = "jimbir8520"
+	//DBUrl  = "localhost"
+	//DBDatabase = "prison_public"
+	DBPwd      = "Lecent@123"
+	DBUrl      = "192.168.1.15"
+	DBDatabase = "lecent_park_admin"
 	DBType     = "mysql"
 	PORT       = 3306
 )

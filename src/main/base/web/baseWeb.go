@@ -246,15 +246,14 @@ func SlowStatus(c *gin.Context) {
 	)
 }
 
-func OpenSlow(c *gin.Context) {
-	res, err := service.OpenSlow()
-	if err != nil {
+func SlowInfo(c *gin.Context) {
+	res, err := service.SlowInfo()
+	if err != nil || res == nil{
 		c.JSON(
 			http.StatusOK,
 			gin.H{
 				"code":   http.StatusInternalServerError,
 				"data":   err,
-				"status": res,
 			},
 		)
 		return
@@ -264,7 +263,6 @@ func OpenSlow(c *gin.Context) {
 		gin.H{
 			"code":   http.StatusOK,
 			"data":   res,
-			"status": res,
 		},
 	)
 }

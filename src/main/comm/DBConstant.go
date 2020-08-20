@@ -22,9 +22,12 @@ var (
 	DB_CONNECTIONS  = " show status like 'Connections';"
 	//锁状态
 	DB_LOCK = " show status like '%lock%';"
-	//慢sql
+	//慢sql状态
 	DB_SLOW_SQL_INFO = " show variables like 'slow_query%'"
+	//慢sql时长
 	DB_SLOW_SQL_TIME = " show variables like '%long_query_time%'"
+	//慢sql条数
+	DB_SLOW_SQL_COUNTS = " SHOW GLOBAL STATUS LIKE '%Slow_queries%';"
 	//查看默认引擎
 	DB_ENGINE = "show variables like 'default_storage_engine';"
 

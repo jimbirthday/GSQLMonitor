@@ -4,7 +4,9 @@ import (
 	"math"
 	"middleProject/src/main/base/domain"
 	"middleProject/src/main/comm"
+	"os/exec"
 	"strconv"
+	"strings"
 )
 
 func DataBaseStatus() *domain.DBInfo {
@@ -433,10 +435,10 @@ func SlowStatus() (slowStatus bool, err error) {
 		for _, res := range slowInfoResults {
 			if v, ok := res["Variable_name"]; ok {
 				if string(v) == "slow_query_log" {
-					if string(res["Value"]) == "OFF" || string(res["Value"]) == "OFF"{
-						return false,nil
-					}else {
-						return true,nil
+					if string(res["Value"]) == "OFF" || string(res["Value"]) == "OFF" {
+						return false, nil
+					} else {
+						return true, nil
 					}
 				}
 			}
@@ -445,21 +447,54 @@ func SlowStatus() (slowStatus bool, err error) {
 	return false, err
 }
 
-func OpenSlow() (slowStatus bool, err error) {
+func SlowInfo() (slowStatus *domain.SlowEntity, err error) {
 	slowInfoResults, err := comm.DbInfo.Query(comm.DB_SLOW_SQL_INFO)
-	if err == nil {
-		for _, res := range slowInfoResults {
-			if v, ok := res["Variable_name"]; ok {
-				if string(v) == "slow_query_log" {
-					if string(res["Value"]) == "OFF" || string(res["Value"]) == "OFF"{
-						return false,nil
-					}else {
-						return true,nil
+	if err != nil {
+		return nil, err
+	}
+	var flag = false
+	var path = ""
+	for _, res := range slowInfoResults {
+		if v, ok := res["Variable_name"]; ok {
+			if string(v) == "slow_query_log" {
+				if string(res["Value"]) == "ON" || string(res["Value"]) == "on" {
+					flag = true
+				}
+			}
+			if string(v) == "slow_query_log_file" {
+				path = string(res["Value"])
+			}
+		}
+	}
+	if flag {
+		countResults, err := comm.DbInfo.Query(comm.DB_SLOW_SQL_COUNTS)
+		var counts = ""
+		if flag {
+			for _, res := range countResults {
+				if v, ok := res["Variable_name"]; ok {
+					if string(v) == "Slow_queries" {
+						counts = string(res["Value"])
 					}
 				}
 			}
 		}
-	}
-	return false, err
-}
 
+		cmd := exec.Command("cat", path)
+		// 执行命令，并返回结果
+		output, err := cmd.Output()
+		if err != nil {
+			return nil, err
+		}
+		s := string(output)
+		replace := strings.Replace(s, "\n", "<br>", -1)
+
+		slowEntity := new(domain.SlowEntity)
+		slowEntity.Counts = counts
+		slowEntity.Path = path
+		slowEntity.FileLog = string(replace)
+
+		return slowEntity, nil
+	}
+	return nil, nil
+
+}

@@ -32,6 +32,7 @@ func userInit() {
 	{
 		actionRouter.POST("/explainSql", baseWeb.ExplainSql)
 		actionRouter.POST("/slowStatus", baseWeb.SlowStatus)
+		actionRouter.POST("/slowInfo", baseWeb.SlowInfo)
 
 	}
 
