@@ -485,16 +485,48 @@ func SlowInfo() (slowStatus *domain.SlowEntity, err error) {
 		if err != nil {
 			return nil, err
 		}
-		s := string(output)
-		replace := strings.Replace(s, "\n", "<br>", -1)
 
 		slowEntity := new(domain.SlowEntity)
 		slowEntity.Counts = counts
 		slowEntity.Path = path
-		slowEntity.FileLog = string(replace)
+		slowEntity.FileLog = fileLogExplain(string(output))
 
 		return slowEntity, nil
 	}
 	return nil, nil
 
+}
+
+func fileLogExplain(log string) []*domain.Slow {
+	split := strings.Split(log, "\n")
+	println(cap(split))
+	a := new(domain.Slow)
+	slows := make([]*domain.Slow, 0)
+	for k, v := range split {
+		if k >= 4 {
+			if b := strings.Contains(v, "# Time:"); b {
+				a.STime = strings.Split(v, "# Time:")[1]
+				if k >= 4 {
+					slows = append(slows, a)
+					a = new(domain.Slow)
+				}
+			}
+			if b := strings.Contains(v, "# Query_time:"); b {
+				i := strings.Split(v, " ")
+				a.QueryTime = i[2]
+				a.LockTime = i[5]
+				a.RowsSent = i[7]
+				a.RowsExamined = i[10]
+			}
+
+			if b := strings.Contains(v, "# User@Host:"); b {
+				a.User = strings.Split(v, "# User@Host:")[1]
+			}
+			if b := strings.Contains(v, "SET timestamp="); b {
+
+			}
+			a.SQL = v
+		}
+	}
+	return slows
 }

@@ -36,6 +36,16 @@ type DBInfo struct {
 type SlowEntity struct {
 	Path string
 	Counts string
-	FileLog string
+	FileLog []*Slow
 
+}
+
+type Slow struct {
+	STime        string
+	User         string
+	QueryTime    string
+	LockTime     string
+	RowsSent     string
+	RowsExamined string
+	SQL          string
 }
