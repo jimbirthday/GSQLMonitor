@@ -1,6 +1,6 @@
 package comm
 
-var (
+const (
 	//连接数
 	DB_PROCESS_LIST = "show processlist"
 	//查询数
@@ -33,6 +33,5 @@ var (
 
 	DB_DATABASE_SIZE = " select concat(round(sum(DATA_LENGTH/1024/1024),2),'MB') as data from TABLES;"
 
-	DB_CHECK= " select 1=1;"
-
+	DB_CHECK = " select 1=1;"
 )
