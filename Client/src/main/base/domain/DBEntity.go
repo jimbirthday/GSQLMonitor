@@ -1,23 +1,51 @@
 package domain
 
-//服务
-type Service struct {
-	Name        string
-	Token       string              //服务授权码
-	CheckNums   int                 //检查次数
-	NamespaceId string              //命名空间
-	ClustetMap  map[string]*Cluster //实例簇
+type ProcesslistEntity struct {
+	Id       string
+	BaseName string
+	User     string
+	Command  string
+	Time     string
+	State    string
+	Info     string
+	Host     string
 }
 
-//实例簇
-type Cluster struct {
-	ClustetMap map[string]*Instance //实例
+type QuestionsEntity struct {
+	VariableName string
+	Value        float64
 }
 
-//实例
-type Instance struct {
-	Ip          string
-	Port        int
-	ServiceName string
-	ClusterName string
+type KeyBufferEntity struct {
+	Name 		 string
+	Value        float64
+}
+
+type DBInfo struct {
+	Port int
+	DataBaseName string
+	Engine string
+	DataSize string
+	Uptime string
+	Status string
+	SlowQueryLog string
+	SlowQueryLogFile string
+	LongQueryTime string
+}
+
+type SlowEntity struct {
+	Path string
+	Counts string
+	FileLog []*Slow
+
+}
+
+type Slow struct {
+	STime        string
+	User         string
+	QueryTime    string
+	LockTime     string
+	RowsSent     string
+	RowsExamined string
+	SQL          string
 }

@@ -32,7 +32,7 @@ func putOrRepalce(service *domain.Service) {
 	}
 
 	DataStore[service.NamespaceId+service.Name] = service
-	log.Println("Service create serviceName:" + service.Name)
+	log.Println("Client create serviceName:" + service.Name)
 }
 
 const (
