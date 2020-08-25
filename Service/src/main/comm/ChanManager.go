@@ -105,34 +105,33 @@ func CreateService(namespaceId string, servcieName string, formMap map[string]st
 	instance := new(domain.Instance)
 	instance.Ip = ip
 	instance.Port = atoi
-	instance.ServiceName = servcieName
-	instance.ClusterName = defaultName
 
-	cluster := new(domain.Cluster)
-	cluster.InstanceMap = make(map[string]*domain.Instance)
-	cluster.InstanceMap[servcieName] = instance
+	s.Ins = instance
 
-	s.ClustetMap = make(map[string]*domain.Cluster)
-	s.ClustetMap[defaultName] = cluster
+	nameMap := ServiceMap[namespaceId]
+	if nameMap == nil {
+		culterMap := make(map[string]map[string]*domain.Service)
 
-	var serviceMap = make(map[string]*domain.Service)
+		serMap := make(map[string]*domain.Service)
+		serMap[servcieName] = s
+		culterMap[defaultName] = serMap
 
-	if ServiceMap == nil {
-
-		ServiceMap = make(map[string]map[string]*domain.Service)
+		ServiceMap[namespaceId] = culterMap
 
 	} else {
+		serMap := nameMap[defaultName]
 
-		if v := ServiceMap[namespaceId]; v != nil {
+		if serMap == nil {
 
-			serviceMap = v
+			serMap = make(map[string]*domain.Service)
+			serMap[defaultName] = s
+
+			nameMap[defaultName] = serMap
+		} else {
+			serMap[servcieName] = s
 		}
-
-		serviceMap[servcieName] = s
-
+		ServiceMap[namespaceId] = nameMap
 	}
-
-	ServiceMap[namespaceId] = serviceMap
 
 	return s, nil
 }

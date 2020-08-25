@@ -1,6 +1,7 @@
 package web
 
 import (
+	"Gacos/src/main/base/domain"
 	"Gacos/src/main/comm"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -117,11 +118,36 @@ func Detail(c *gin.Context) {
 }
 
 func List(c *gin.Context) {
+	var serviceList []*domain.ServiceList = make([]*domain.ServiceList, 0)
+
+	for k, v := range comm.ServiceMap {
+		serList := new(domain.ServiceList)
+		serList.Name = k
+		var groupList []*domain.Gruop = make([]*domain.Gruop, 0)
+
+		for k, v := range v {
+			namespace := new(domain.Gruop)
+			namespace.Name = k
+			var serList []*domain.Service = make([]*domain.Service, 0)
+
+			for _, v := range v {
+				serList = append(serList, v)
+			}
+
+			namespace.ServiceList = serList
+			groupList = append(groupList, namespace)
+
+		}
+		serList.GruopList = groupList
+
+		serviceList = append(serviceList, serList)
+	}
+
 	c.JSON(
 		http.StatusOK,
 		gin.H{
 			"code": http.StatusOK,
-			"data": comm.ServiceMap,
+			"data": serviceList,
 		},
 	)
 

@@ -7,18 +7,12 @@ import (
 )
 
 func GetService(namespaceId string, serviceName string) (service *domain.Service, err error) {
-	if m, ok := comm.ServiceMap[namespaceId]; ok {
+	if m, ok := comm.DataStore[namespaceId+serviceName]; ok {
+
 		if m != nil {
-
-			if m, ok := m[serviceName]; ok {
-
-				if m != nil {
-					return m, nil
-				}
-
-			}
-
+			return m, nil
 		}
+
 	}
 	return nil, errors.New("the service is not exist ")
 }
@@ -32,11 +26,11 @@ func addOrReplaceService(service *domain.Service) {
 }
 
 func RemoveService(service *domain.Service) {
-	for _, v := range comm.ServiceMap {
+	if v := comm.ServiceMap[service.NamespaceId]; v != nil {
 
-		if m, ok := v[service.Name]; ok {
+		for _, v := range v {
 
-			if m != nil {
+			if v1 := v[service.Name]; v1 != nil {
 				delete(v, service.Name)
 			}
 
