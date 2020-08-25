@@ -118,17 +118,17 @@ func Detail(c *gin.Context) {
 }
 
 func List(c *gin.Context) {
-	var serviceList []*domain.ServiceList = make([]*domain.ServiceList, 0)
+	var serviceList  = make([]*domain.ServiceList, 0)
 
 	for k, v := range comm.ServiceMap {
 		serList := new(domain.ServiceList)
 		serList.Name = k
-		var groupList []*domain.Gruop = make([]*domain.Gruop, 0)
+		var groupList = make([]*domain.Gruop, 0)
 
 		for k, v := range v {
 			namespace := new(domain.Gruop)
 			namespace.Name = k
-			var serList []*domain.Service = make([]*domain.Service, 0)
+			var serList = make([]*domain.Service, 0)
 
 			for _, v := range v {
 				serList = append(serList, v)
