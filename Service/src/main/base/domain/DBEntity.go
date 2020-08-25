@@ -11,7 +11,7 @@ type Service struct {
 
 //实例簇
 type Cluster struct {
-	ClustetMap map[string]*Instance //实例
+	InstanceMap map[string]*Instance //实例
 }
 
 //实例

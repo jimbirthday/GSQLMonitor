@@ -11,12 +11,15 @@ func Init() {
 	comm.Gin = gin.Default()
 	comm.Gin.Use(middleware.Cors())
 	userInit()
-	go comm.ListenDataStore()
+	go comm.Init()
 }
 
 func userInit() {
 	baseRouter := comm.Gin.Group("/service")
 	{
 		baseRouter.POST("/create", baseWeb.Create)
+		baseRouter.POST("/remove", baseWeb.Remove)
+		baseRouter.GET("/detail", baseWeb.Detail)
+		baseRouter.GET("/list", baseWeb.List)
 	}
 }

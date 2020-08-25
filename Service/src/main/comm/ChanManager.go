@@ -5,7 +5,6 @@ import (
 	"errors"
 	"log"
 	"strconv"
-	"time"
 )
 
 const (
@@ -13,19 +12,48 @@ const (
 	DEFAULT_GROUP = "DEFAULT_GROUP"
 )
 
+func Init() {
+	AddChan = make(chan *domain.Service, 10)
+	RemoveChan = make(chan *domain.Service, 10)
+	go listenAdd()
+	go listenRemove()
 
-func ListenDataStore() {
+}
+
+func listenAdd() {
+
 	for {
+
 		select {
-		case ack := <-DataChan:
-			go putOrRepalce(ack)
-		default:
-			time.Sleep(time.Second * 10)
-			log.Println("listenDataStore beat")
+
+		case service := <-AddChan:
+			go putOrRepalce(service)
 		}
 
 	}
 
+}
+
+func listenRemove() {
+
+	for {
+
+		select {
+
+		case service := <-RemoveChan:
+			go remove(service)
+
+		}
+
+	}
+
+}
+
+func remove(service *domain.Service) {
+	if _, ok := DataStore[service.NamespaceId+service.Name]; ok {
+		delete(DataStore, service.NamespaceId+service.Name)
+	}
+	log.Println("Client delete serviceName:" + service.Name)
 }
 
 func putOrRepalce(service *domain.Service) {
@@ -37,7 +65,6 @@ func putOrRepalce(service *domain.Service) {
 	log.Println("Client create serviceName:" + service.Name)
 }
 
-
 func CreateService(namespaceId string, servcieName string, formMap map[string]string) (service *domain.Service, err error) {
 	s := new(domain.Service)
 
@@ -48,7 +75,11 @@ func CreateService(namespaceId string, servcieName string, formMap map[string]st
 
 	var defaultName = DEFAULT_GROUP
 	if groupName, ok := formMap["groupName"]; ok {
-		defaultName = groupName
+
+		if groupName != "" {
+			defaultName = groupName
+		}
+
 	}
 
 	var ip = ""
@@ -78,20 +109,30 @@ func CreateService(namespaceId string, servcieName string, formMap map[string]st
 	instance.ClusterName = defaultName
 
 	cluster := new(domain.Cluster)
-	cluster.ClustetMap = make(map[string]*domain.Instance)
-	cluster.ClustetMap[servcieName] = instance
+	cluster.InstanceMap = make(map[string]*domain.Instance)
+	cluster.InstanceMap[servcieName] = instance
 
 	s.ClustetMap = make(map[string]*domain.Cluster)
 	s.ClustetMap[defaultName] = cluster
 
-	m := make(map[string]*domain.Service)
-	m[servcieName] = service
+	var serviceMap = make(map[string]*domain.Service)
 
 	if ServiceMap == nil {
+
 		ServiceMap = make(map[string]map[string]*domain.Service)
+
+	} else {
+
+		if v := ServiceMap[namespaceId]; v != nil {
+
+			serviceMap = v
+		}
+
+		serviceMap[servcieName] = s
+
 	}
 
-	ServiceMap[namespaceId] = m
+	ServiceMap[namespaceId] = serviceMap
 
 	return s, nil
 }
