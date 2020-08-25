@@ -21,7 +21,7 @@ func Create(c *gin.Context) {
 	formMap["port"] = port
 	formMap["groupName"] = groupName
 
-	service, err := GetService(namespaceId, serviceName)
+	service, err := comm.GetService(namespaceId, serviceName)
 	if service != nil {
 
 		c.JSON(
@@ -48,7 +48,7 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	addOrReplaceService(service)
+	comm.AddOrReplaceService(service)
 
 	c.JSON(
 		http.StatusOK,
@@ -64,7 +64,7 @@ func Remove(c *gin.Context) {
 	namespaceId := c.PostForm("namespaceId")
 	serviceName := c.PostForm("serviceName")
 
-	service, err := GetService(namespaceId, serviceName)
+	service, err := comm.GetService(namespaceId, serviceName)
 	if err != nil {
 		c.JSON(
 			http.StatusInternalServerError,
@@ -77,7 +77,7 @@ func Remove(c *gin.Context) {
 		return
 	}
 
-	RemoveService(service)
+	comm.RemoveService(service)
 
 	c.JSON(
 		http.StatusOK,
@@ -94,7 +94,7 @@ func Detail(c *gin.Context) {
 	namespaceId := c.Query("namespaceId")
 	serviceName := c.Query("serviceName")
 
-	service, err := GetService(namespaceId, serviceName)
+	service, err := comm.GetService(namespaceId, serviceName)
 	if err != nil {
 		c.JSON(
 			http.StatusInternalServerError,
