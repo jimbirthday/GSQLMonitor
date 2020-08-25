@@ -8,9 +8,11 @@ import (
 	"time"
 )
 
-func put(key string, service *domain.Service) {
+const (
+	PREFIX        = "MSQL"
+	DEFAULT_GROUP = "DEFAULT_GROUP"
+)
 
-}
 
 func ListenDataStore() {
 	for {
@@ -35,10 +37,6 @@ func putOrRepalce(service *domain.Service) {
 	log.Println("Client create serviceName:" + service.Name)
 }
 
-const (
-	PREFIX        = "MSQL"
-	DEFAULT_GROUP = "DEFAULT_GROUP"
-)
 
 func CreateService(namespaceId string, servcieName string, formMap map[string]string) (service *domain.Service, err error) {
 	s := new(domain.Service)
