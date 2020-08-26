@@ -3,6 +3,7 @@ package comm
 import (
 	"Gacos/src/main/base/domain"
 	"log"
+	"time"
 )
 
 const (
@@ -57,6 +58,9 @@ func remove(service *domain.Service) {
 }
 
 func putOrRepalce(service *domain.Service) {
+	if service.CheckNums == 0 {
+		service.CheckTime = time.Now().Unix()
+	}
 
 	if _, ok := DataStore[service.NamespaceId+service.Name]; ok {
 		delete(DataStore, service.NamespaceId+service.Name)

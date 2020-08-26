@@ -3,6 +3,7 @@ package application
 import (
 	baseWeb "Gacos/src/main/base/web"
 	"Gacos/src/main/comm"
+	"Gacos/src/main/listener"
 	"Gacos/src/main/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -21,5 +22,6 @@ func userInit() {
 		baseRouter.POST("/remove", baseWeb.Remove)
 		baseRouter.GET("/detail", baseWeb.Detail)
 		baseRouter.GET("/list", baseWeb.List)
+		baseRouter.GET("/heartbeat", listener.Heartbeat)
 	}
 }
