@@ -12,7 +12,7 @@ func main() {
 func init() {
 	application.Init()
 	comm.InitDB()
-	err := comm.Gin.Run("0.0.0.0:8001") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	err := comm.Gin.Run("0.0.0.0:8008") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	if err != nil {
 		panic("application run failed  err is " + err.Error())
 	}
