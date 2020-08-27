@@ -2,7 +2,6 @@ package listener
 
 import (
 	"Gacos/src/main/comm"
-	"fmt"
 	"time"
 )
 
@@ -30,7 +29,6 @@ func checkHealth() {
 				i := currtTime - v.CheckTime
 
 				if i > 30 {
-					fmt.Print("remove ~~~~~~~~~~~~~~~~~~~~")
 					comm.RemoveService(v)
 				}
 
