@@ -2,34 +2,64 @@ package middleware
 
 import (
 	"fmt"
+	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 	"time"
 )
 
 type Service struct {
-	NamespaceId string
-	ServiceName string
-	GroupName   string
+	NamespaceId string `yaml:"namespaceId"`
+	ServiceName string `yaml:"serviceName"`
+	GroupName   string `yaml:"groupName"`
 	Ip          string
-	Port        string
+	Port        string `yaml:"port"`
 }
 
 var (
 	service       *Service
 	ServiceCreate bool
+	URL           string
+	namespaceId   string
+	serviceName   string
+	port          string
 )
 
-const URL string = "http://localhost:8002"
-const namespaceId string = "G1"
-const serviceName string = "GSQL"
-const port string = "8008"
-
 func init() {
+	fileReadConf()
 	go CreateService()
 	go HealthCheck()
 }
+
+type conf struct {
+	URL         string `yaml:"serviceUrl"`
+	NamespaceId string `yaml:"namespace"`
+	ServiceName string `yaml:"name"`
+	Port        string `yaml:"port"`
+}
+
+func fileReadConf() {
+
+	yamlFile, err := ioutil.ReadFile("src/main/config/config.yaml")
+
+	if err != nil {
+		log.Fatal("conf err " + err.Error())
+	}
+
+	c := new(conf)
+	err = yaml.Unmarshal(yamlFile, c)
+	URL = c.URL
+	namespaceId = c.NamespaceId
+	serviceName = c.ServiceName
+	port = c.Port
+	if err != nil {
+		log.Fatal("conf err " + err.Error())
+	}
+
+}
+
 func CreateService() {
 
 	m := make(map[string][]string)
@@ -71,10 +101,10 @@ func HealthCheck() {
 		header := http.Header{}
 
 		m := make(map[string]string)
-		m["namespaceId"] = "SPACE"
-		m["serviceName"] = "LOCAL_SERVICE"
+		m["namespaceId"] = namespaceId
+		m["serviceName"] = serviceName
 
-		get(URL+"service/heartbeat", header, 1000, m)
+		get(URL+"/service/heartbeat", header, 1000, m)
 
 		fmt.Println("check health")
 	}

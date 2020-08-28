@@ -1,0 +1,6 @@
+
+name: "SERVE_LOG"
+serviceUrl: "http://localhost:8002"
+namespace:  "SPACE"
+port: "8008"
+mongoDB: "Logistics"

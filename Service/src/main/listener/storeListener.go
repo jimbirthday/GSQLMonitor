@@ -12,7 +12,7 @@ func init() {
 func storeListener() {
 
 	for {
-		time.Sleep(10 * time.Second)
+		time.Sleep(30 * time.Second)
 		go checkHealth()
 	}
 
