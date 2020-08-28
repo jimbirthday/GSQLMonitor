@@ -2,5 +2,5 @@
 name: "SERVE_LOG"
 serviceUrl: "http://localhost:8002"
 namespace:  "SPACE"
-port: "8008"
+port: "8001"
 mongoDB: "Logistics"

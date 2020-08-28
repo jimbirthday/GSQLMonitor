@@ -118,7 +118,7 @@ func Detail(c *gin.Context) {
 }
 
 func List(c *gin.Context) {
-	var serviceList  = make([]*domain.ServiceList, 0)
+	var serviceList  = make([]*domain.Service, 0)
 
 	for k, v := range comm.ServiceMap {
 		serList := new(domain.ServiceList)
@@ -131,7 +131,7 @@ func List(c *gin.Context) {
 			var serList = make([]*domain.Service, 0)
 
 			for _, v := range v {
-				serList = append(serList, v)
+				serviceList = append(serList, v)
 			}
 
 			namespace.ServiceList = serList
@@ -139,8 +139,6 @@ func List(c *gin.Context) {
 
 		}
 		serList.GruopList = groupList
-
-		serviceList = append(serviceList, serList)
 	}
 
 	c.JSON(
