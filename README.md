@@ -58,7 +58,13 @@
     修复一系列bug，优化代码，添加配置文件向注册中心注册服务
     
 
-![avatar](https://static01.imgkr.com/temp/de627d5d52624b31b7e8c72c1815f5c4.png)    
+### 服务注册
+![](https://imgkr2.cn-bj.ufileos.com/ea6a374e-7fa6-4620-a324-10cf3cb68144.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&Signature=OKNrN8PruVGpktd9O8HZrEM%252BaeU%253D&Expires=1598764825)
+
+### 服务信息
+![](https://imgkr2.cn-bj.ufileos.com/c7c4f94d-3532-4be7-a032-b1b094e64354.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&Signature=WSlOzMe7kbKZjFJ9Y3sSOywwAg4%253D&Expires=1598764869)
+
+   
 
 ## 长期目标
 
