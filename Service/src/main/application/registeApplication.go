@@ -6,6 +6,7 @@ import (
 	"Gacos/src/main/listener"
 	"Gacos/src/main/middleware"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func Init() {
@@ -24,4 +25,11 @@ func userInit() {
 		baseRouter.GET("/list", baseWeb.List)
 		baseRouter.GET("/heartbeat", listener.Heartbeat)
 	}
+
+
+	comm.Gin.GET("/", baseWeb.IndexHandler)
+	comm.Gin.LoadHTMLFiles("src/main/views/index.html")
+	comm.Gin.StaticFS("/css", http.Dir("src/main/views/css"))
+	comm.Gin.StaticFS("/js", http.Dir("src/main/views/js"))
+	comm.Gin.StaticFS("/img", http.Dir("src/main/views/img"))
 }

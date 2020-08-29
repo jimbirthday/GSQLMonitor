@@ -7,6 +7,11 @@ import (
 	"net/http"
 )
 
+func IndexHandler(c *gin.Context) {
+	c.HTML(200, "index.html", nil)
+}
+
+
 func Create(c *gin.Context) {
 
 	namespaceId := c.PostForm("namespaceId")
